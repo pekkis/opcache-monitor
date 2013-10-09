@@ -1,0 +1,84 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>Files</h1>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12">
+
+            <ul class="pagination">
+                <li><a href="/files.php?group=0">ungrouped</a></li>
+                <li><a href="/files.php?group=1">1</a></li>
+                <li><a href="/files.php?group=2">2</a></li>
+                <li><a href="/files.php?group=3">3</a></li>
+                <li><a href="/files.php?group=4">4</a></li>
+                <li><a href="/files.php?group=5">5</a></li>
+            </ul>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td>Path</td>
+                        <td>Size</td>
+                        <td>Hits</td>
+                        <td>Last used</td>
+                        <td>Created</td>
+                        <td>Actions</td>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for file in files %}
+
+                    <tr>
+                        <td>{{ file.full_path }}</td>
+                        <td>{{ file.memory_consumption }}</td>
+                        <td>{{ file.hits }}</td>
+                        <td>{{ file.last_used_timestamp|date('Y-m-d H:i:s') }}</td>
+                        <td>{{ file.last_used_timestamp|date('Y-m-d H:i:s') }}</td>
+                        <td>
+                            <button class="btn btn-danger file-fornicator" data-href="/reset-file.php?path={{ file.full_path }}">Fornicate</button>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+
+        </div>
+
+    </div>
+
+    <script>
+
+        $(document).ready(function() {
+
+            $('.file-fornicator').click(function(evt) {
+
+                evt.preventDefault();
+
+                var $btn = $(this);
+
+                $.post($btn.data('href')).then(function(data) {
+                    if (data.success) {
+                        $btn.removeClass('btn-danger').addClass('btn-success');
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+
+{% endblock %}

@@ -1,0 +1,183 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>Dashboard</h1>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-4 graph-container">
+
+            <h2>Memory ({{ graphs.memory.total }}M)</h2>
+
+            <div class="donut" id="memory-graph"></div>
+        </div>
+
+        <div class="col-md-4 graph-container">
+            <h2>Keys ({{ graphs.keys.total }})</h2>
+            <div class="donut" id="keys-graph"></div>
+        </div>
+
+        <div class="col-md-4 graph-container">
+            <h2>Hits ({{ (graphs.hits.total / 1000000)|number_format(6, '.', '')  }}M)</h2>
+            <div class="donut" id="hits-graph"></div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <h2>General</h2>
+
+            <table class="table table-striped">
+
+                <tbody>
+                {% for key, value in general %}
+                    <tr>
+                        <td>
+                            {{ key }}
+                        </td>
+                        <td>
+                            {{ value }}
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+            <h2>Memory</h2>
+
+            <table class="table table-striped">
+
+                <tbody>
+                {% for key, value in status.memory_usage %}
+                    <tr>
+                        <td>
+                            {{ key }}
+                        </td>
+                        <td>
+                            {{ value }}
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+            <h2>Statistics</h2>
+
+            <table class="table table-striped">
+
+                <tbody>
+                {% for key, value in status.opcache_statistics %}
+                    <tr>
+                        <td>
+                            {{ key }}
+                        </td>
+                        <td>
+                            {{ value }}
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+
+            <h2>Configuration directives</h2>
+
+            <table class="table table-striped">
+
+                <tbody>
+                {% for key, value in configuration.directives %}
+                    <tr>
+                        <td>
+                            {{ key }}
+                        </td>
+                        <td>
+                            {{ value }}
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+
+
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <h2>Opcache functions</h2>
+
+            <table class="table table-striped">
+
+                <tbody>
+                {% for key, function in functions %}
+                    <tr>
+                        <td>
+                            {{ function }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <script>
+
+        $(document).ready(function() {
+
+            Morris.Donut({
+                element: 'memory-graph',
+                data: [
+                    {label: 'Free', value: {{ graphs.memory.free|number_format(2, '.', '') }} },
+                    {label: 'Wasted', value: {{ graphs.memory.wasted|number_format(2, '.', '') }} },
+                    {label: 'Used', value: {{ graphs.memory.used|number_format(2, '.', '') }} }
+                ],
+                formatter: function (y) { return y + 'M'; }
+            });
+
+            Morris.Donut({
+                element: 'keys-graph',
+                data: [
+                    {label: 'Free', value: {{ graphs.keys.free }} },
+                    {label: 'Wasted', value: {{ graphs.keys.wasted }} },
+                    {label: 'Used', value: {{ graphs.keys.scripts }} }
+                ],
+                colors: ['#990000', '#BB0000', '#DD0000'],
+                formatter: function (y) { return y; }
+            });
+
+            Morris.Donut({
+                element: 'hits-graph',
+                data: [
+                    {label: 'Hits', value: {{ (graphs.hits.hits / 1000000)|number_format(6, '.', '') }} },
+                    {label: 'Misses', value: {{ (graphs.hits.misses / 1000000)|number_format(6, '.', '') }} }
+                ],
+                colors: ['#009900', '#003300'],
+                formatter: function (y) { return y + 'M'; }
+            });
+
+
+        });
+
+    </script>
+
+
+{% endblock %}

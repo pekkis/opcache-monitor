@@ -1,0 +1,15 @@
+{
+    "name": "OpCacheMonitor",
+    "description": "OPCache Monitor",
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        }
+    },
+
+    "require": {
+        "php": ">=5.5.0",
+        "twig/twig": ">= 1.10.0"
+    },
+    "minimum-stability": "stable"
+}
